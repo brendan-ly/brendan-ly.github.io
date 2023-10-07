@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head lang='en'>
+    <!--
+    Brendan Ly
+    October 4th, 2022
+-->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" />
+    <title>Chinese Zodiac</title>
+    <style>
+        /* styles go here */
+        @import "../portfolio.css";
+        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+        h1 {
+            text-align: center;
+            color: #FFD84B;
+            font-family: Permanent Marker, sans-serif;
+            font-size: 48px;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: #fa3a3a;
+            text-align: center;
+            color: rgb(243, 243, 99);
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 1em auto;
+            width: 90%;
+        }
+
+        td, th {
+            border: 2px solid black;
+            padding: 6px;
+            width: 8%;
+            text-align: center;
+            background-color: rgba(192, 22, 79, 0.502);
+        }
+
+        th {
+            background-color: #7e082b;
+        }
+
+        div#userentry {
+            border: 2px solid white;
+            padding: 6px 0;
+            text-align: center;
+            width: 89.5%;
+            margin: 1em auto;
+            color: yellow;
+        }
+
+        div#userentry input#birthyear {
+            width: 5em;
+
+        }
+
+        div#userentry span#result {
+            display: inline-block;
+            width: 18em;
+            text-align: left;
+        }
+
+        footer {
+            text-align: center;
+            margin: 30px 0 0 0;
+            font-size: 12px;
+        }
+
+        td:hover {
+            background-color: rgb(0, 0, 0);
+        }
+        button#lookup {
+            border-radius: 5px;
+            background-color: rgb(233, 233, 69);
+            border: none;
+            color: black;
+        }
+        nav img {
+            background-color: rgb(233, 233, 69);
+        }
+    </style>
+    <script src='../navigation.js'>
+    </script>
+</head>
+
+<body>
+    <h1>Chinese Zodiac</h1>
+    <div id="userentry">
+        <label>Enter your birth year:</label>
+        <input type='text' id='birthyear' />
+        <button id='lookup'>Lookup year</button>
+        <span id='result'>&nbsp;</span>
+    </div>
+
+    <table id="years">
+
+    </table>
+    <script>
+        var firstYear = 1948; //must be the first year = rat
+
+        var animals = [
+            "Rat",
+            "Ox",
+            "Tiger",
+            "Rabbit",
+            "Dragon",
+            "Snake",
+            "Horse",
+            "Goat",
+            "Monkey",
+            "Rooster",
+            "Dog",
+            "Pig"
+        ];
+
+        makeAnimalsHeader();
+        makeYearsContents();
+        setup();
+        function setup() {
+            var lookupButton = document.getElementById('lookup');
+            lookupButton.onclick = lookupYear;
+        }
+
+        function lookupYear(e) {
+            var year = document.getElementById('birthyear').value;
+            year = parseInt(year);
+            var index = (year + 8) % 12;
+            // alert(year+8);
+            document.getElementById('result').textContent =
+                year + " is the year of the " + animals[index] + ".";
+        }
+
+        function makeAnimalsHeader() {
+            var header = "<tr>";
+            for (var i = 0; i < animals.length; i++) {
+                header += "<th>" + animals[i] + "</th>";
+            }
+            header += "</tr>\n";
+            document.getElementById('years').innerHTML = header;
+        }
+
+        function makeYearsContents() {
+            var content = "";
+            for (var i = firstYear; i < 2022; i += 12) { //adding 12
+                content += "<tr>";
+                for (var j = 0; j < 12; j++) {
+                    content += "<td>" + (i + j) + "</td>";
+                }
+                content += "</tr>\n";
+            }
+            document.getElementById('years').innerHTML += content;
+        }
+
+    </script>
+    <div id='case'>
+        <p>
+            <b>Objective:</b>Create an informational chart that tells users their Zodiac based on their birth year. 
+
+
+        </p>
+        <p>
+            <b>Problem:</b>It may be difficult for the user to locate their Zodiac in the chart.
+
+
+        </p>
+        <p>
+            <b>Solution:</b>Create an input box that allows users to type in their birth year to discover their Zodiac. 
+
+
+        </p>
+    </div>
+    <nav>
+        <a href='../index.html'>
+            <img src='../nav/black-arrow-left.png' alt='previous' />
+        </a>
+        <a href='../index.html'>
+            <img src='../nav/black-grid.png' alt='home' />
+        </a>
+        <a href='../index.html'>
+            <img src='../nav/black-arrow-right.png' alt='next' />
+        </a>
+    </nav>
+
+
+</body>
+
+</html>

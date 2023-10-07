@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    Brendan Ly
+    December 5th, 2022
+
+    -->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" />
+    <title>Periodic Table</title>
+    <style>
+        @import "portfolio.css";
+
+        /* styles go here */
+        h1 {
+            color: white;
+        }
+
+        body {
+            text-align: center;
+            font-family: Georgia, sans-serif;
+            background-color: black;
+        }
+
+        div.row div {
+            display: inline-block;
+            width: 4.5%;
+            margin: 1px;
+            aspect-ratio: 1/1;
+            background-color: transparent;
+        }
+
+        div#extras {
+            margin-top: 48px;
+        }
+
+        /* make info display same line */
+        div.row div span {
+            display: block;
+            margin-top: 6px;
+            color: white;
+        }
+
+        /* make element name bigger and bold */
+        div.row div span:first-of-type {
+            display: block;
+            font-size: 120%;
+            font-weight: bold;
+        }
+
+        /* make element number smaller */
+        div.row div span:nth-of-type(2) {
+            font-size: 80%;
+        }
+
+        div.row div.alkali {
+            background-color: pink;
+        }
+
+        div.row div.alkaline {
+            background-color: #a166a0;
+        }
+
+        div.row div.noble {
+            background-color: rgb(107, 214, 107);
+        }
+
+        div.row div.alkali {
+            background-color: #1A66C9;
+        }
+
+        div.row div.diatomic {
+            background-color: #00B6B3;
+        }
+
+        div.row div.halogen {
+            background-color: #FA506E;
+        }
+
+        div.row div.metals {
+            background-color: #f63951;
+        }
+
+        div.row div.lanthanides {
+            background-color: rgb(201, 52, 121);
+        }
+
+        div.row div.actinides {
+            background-color: rgb(210, 31, 226);
+        }
+
+        div.row div.metalloid {
+            background-color: #f4b659;
+        }
+
+        div.row div.polyatomic {
+            background-color: red;
+        }
+
+        div.row div.posttransition {
+            background-color: #F36E4A;
+        }
+
+        /* popup styles */
+        div.popup {
+            color: black;
+            background-color: rgb(255, 251, 219);
+            width: 60%;
+            margin: 1em auto;
+            padding: 1em 0;
+            box-shadow: 3px 3px 20px black;
+            border-radius: 6px;
+            position: fixed;
+            top: 10%;
+            left: 20%;
+            display: none;
+        }
+
+        div.popup span#elementname {
+            clear: both;
+            position: static;
+            margin-left: 50%;
+            margin-top: -16px;
+            font-weight: bold;
+            font-size: 140%;
+        }
+
+        div.popup span#close {
+            margin-left: 90%;
+            border: 2px solid black;
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: whitesmoke;
+            cursor: pointer;
+            color: black;
+        }
+
+        div.popup span#atomicsymbol p {
+            display: inline-block;
+        }
+
+        div.popup span#atomicnumber p {
+            display: inline-block;
+        }
+
+        div.popup span#atomictype p {
+            display: inline-block;
+        }
+
+        div.popup span#atomicmass p {
+            display: inline-block;
+        }
+
+        div.popup span#radioactive p {
+            display: inline-block;
+        }
+
+        div#mask {
+            background-color: gray;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            opacity: 50%;
+            display: none;
+        }
+
+        div.popup span#elementname {
+            clear: both;
+            position: static;
+            margin: 0 auto;
+            display: inline;
+            margin-top: -16px;
+            font-weight: bold;
+            font-size: 140%;
+        }
+    </style>
+
+    <script src='navigation.js'></script>
+
+</head>
+
+<body>
+
+
+
+    <h1>Periodic Table of the Elements</h1>
+
+    <!-- popup not finished yet-->
+    <div id="mask">&nbsp;</div>
+
+    <div class='popup' id='popup'>
+        <span id="close">&times;</span><br>
+
+        <span id='elementname'>
+            <p>Hydrogen</p>
+        </span><br>
+        <span id='atomicsymbol'>
+            <p>Symbol: </p>
+            <p id='atomicsymbolinfo'>H</p>
+        </span> <br>
+        <span id='atomicnumber'>
+            <p>Atomic Number: </p>
+            <p id='atomicnumberinfo'>1</p>
+        </span> <br>
+        <span id="atomictype">
+            <p>Type:</p>
+            <p id='atomictypeinfo'>Diatomic</p>
+        </span> <br>
+        <span id='atomicmass'>
+            <p>Mass(u):</p>
+            <p id='atomicmassinfo'>1</p>
+        </span> <br>
+        <span id='radioactive'>
+            <p>Radioactive:</p>
+            <p id='radioactiveinfo'>&nbsp;</p>
+        </span>
+        <span id='link'>
+            <p><a href="https://en.wikipedia.org/wiki/" target="_blank" id="elementlink">Link</a></p>
+        </span>
+    </div>
+
+    <div id='elements'>
+    </div>
+
+    <div id='extras'>
+    </div>
+
+    <script>
+
+
+        function get(id) {
+            return document.getElementById(id);
+        }
+
+        makeGrid(18, 7, "elements");
+        makeGrid(15, 2, "extras");
+        var xhr = false;
+        var elementsInfo = [];
+        getElements();
+
+        function getElements() {
+            // xhr stands for XML Http Request
+            xhr = new XMLHttpRequest();
+            // tell to retrieve information
+            xhr.onreadystatechange = showElements;
+            // get information
+            xhr.open("GET", "http://www.mixed-up.com/mc/api/elements.php?all=true");
+            // sends request
+            xhr.send();
+        }
+
+        function showElements() {
+            // readyState	Holds the status of the XMLHttpRequest.
+            // 0: request not initialized
+            // 1: server connection established
+            // 2: request received
+            // 3: processing request
+            // 4: request finished and response is ready
+            // 200: "OK"
+            // 403: "Forbidden"
+            // 404: "Page not found"
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log(xhr.responseText);
+                var info = JSON.parse(xhr.responseText);
+                console.log(info);
+                for (var i = 0; i < info.length; i++) {
+                    // showElement not showElements; can't call function from inside
+                    showElement(info[i]);
+                }
+                elementsInfo = info;
+            }
+        }
+
+        function showElement(info) {
+            var row = info.row;
+            var column = info.column;
+
+            // ignores bottom table
+            // if (row > 7) {
+            //     return;
+            // }
+
+            if (row >= 8) {
+                rows = get('extras').getElementsByClassName('row');
+                cells = rows[row - 8].getElementsByTagName('div');
+            }
+            else {
+                // getting elements 7 rows
+                var rows = get('elements').getElementsByClassName('row');
+                // Javascript: subtract 1 to get row 1 
+                var cells = rows[row - 1].getElementsByTagName('div');
+            }
+
+            var spans = cells[column - 1].getElementsByTagName('span');
+            spans[0].textContent = info.symbol;
+            spans[1].textContent = info.number;
+
+            // only color cells with elements
+            // cells[column - 1].style.backgroundColor = "gold";
+            cells[column - 1].className = info.type;
+            cells[column - 1].onclick = lookup;
+
+            get('close').onclick = closePopup;
+        }
+
+        function lookup(e) {
+            document.getElementById('mask');
+            document.getElementsByClassName('popup');
+
+            get("mask").style.display = "block";
+            get("popup").style.display = "block";
+
+            var number = e.currentTarget.getElementsByTagName('span')[1].textContent;
+            // alert (number);
+            for (var i = 0; i < elementsInfo.length; i++) {
+                if (elementsInfo[i].number == number) {
+
+                    // capitalize the first letter of every element type because Ajax data is lowercased
+                    var capital = elementsInfo[i].type;
+                    var capital2 = capital.charAt(0).toUpperCase() + capital.slice(1);
+
+                    get('elementname').textContent = elementsInfo[i].name;
+                    get('atomicsymbolinfo').textContent = elementsInfo[i].symbol;
+                    get('atomicnumberinfo').textContent = elementsInfo[i].number;
+                    get('atomictypeinfo').textContent = capital2;
+                    get('atomicmassinfo').textContent = elementsInfo[i].weight;
+                    get('radioactiveinfo').textContent = elementsInfo[i].radioactive;
+                    if (get('radioactiveinfo').textContent == "" || get('radioactiveinfo').textContent == null) {
+                        get('radioactiveinfo').textContent = "No";
+                    }
+                    else {
+                        get('radioactiveinfo').textContent = "Yes";
+                    }
+
+                    get('elementlink').href = ("https://en.wikipedia.org/wiki/" + elementsInfo[i].name);
+
+                }
+                // alert(elementsInfo[i].name);
+                // window.open("https://en.wikipedia.org/wiki/" + elementsInfo[i].name);
+
+            }
+        }
+
+
+
+
+        function makeGrid(columns, rows, id) {
+            var content = "";
+            for (var r = 0; r < rows; r++) {
+                content += "<div class='row'>";
+                for (var c = 0; c < columns; c++) {
+                    content += "<div>";
+                    content += "<span>&nbsp;</span>";
+                    content += "<span>&nbsp;</span>";
+                    content += "</div>";
+                }
+                content += "</div>";
+            }
+            get(id).innerHTML = content;
+        }
+
+        function closePopup(e) {
+            get('popup').style.display = "none";
+            get("mask").style.display = "none";
+        }
+
+
+    </script>
+    
+    <nav>
+        <a href='index.html'>
+            <img src= 'nav/darkblue-arrow-left.png' alt='previous' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-grid.png' alt='home' />
+        </a>
+        <a href='index.html'>
+            <img src= 'nav/darkblue-arrow-right.png' alt='next' />
+        </a>
+    </nav>
+
+
+</body>
+
+</html>

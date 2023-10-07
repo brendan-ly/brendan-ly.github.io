@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+    Brendan Ly
+    October 6, 2022
+    -->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" /> 
+    <title>YBHS Hiking Club Slideshow</title>
+    <style>
+        @import "../portfolio.css";
+        body {
+            text-align: center;
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background-color: rgb(180, 240, 185);
+        }
+        img#image {
+            margin: 1em auto;
+            height: 450px;
+            width: 600px;
+            object-fit: cover; 
+            box-shadow: 2px 2px 6px #222222;
+            padding: 18px;
+            background-color: #f1f2f0;
+        }
+        
+    </style>
+    <script src='../navigation.js'>
+    </script>
+</head>
+
+<body>
+    <h1>YBHS Hiking Club Slideshow</h1>
+    <p>Alum Rock Event - October 8th, 2022</p>
+    <img src="1.jpg" alt="Two deer" id="image" />
+    <p id="caption">Two deer in the wild</p>
+    <script>
+        var images = [
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
+            "5.jpg",
+            "6.jpg",
+            "7.jpg",
+            "8.jpg",
+            "9.jpg",
+            "10.jpg",
+            "11.jpg",
+            "12.jpg",
+            "13.jpg",
+            "14.jpg",
+        ];
+        var captions = [
+            "Two deer in the wild",
+            "A deer running away",
+            "A view of Eagle Rock",
+            "Walking down the road",
+            "Hiking up the trail",
+            "Spotting our destination",
+            "View down North Rim Trail",
+            "View of the city below",
+            "View of the city below",
+            "Group photo!",
+            "Taking the stairs",
+            "Giving out instructions",
+            "Group photo at the peak",
+            "Group photo on the way back",
+        ];
+
+        var index = 0;
+
+        var imageCache= [ ];
+
+        for (var i=0; i<images.length; i++) {
+
+            var image = new Image();
+            image.src = images[i];
+            var caption = images[i][0].toUpperCase() +
+                images[i].replace(".jpg", "").substr(1);
+            image.caption = caption;
+            imageCache.push(image);
+            
+        }
+
+        setInterval(nextImage, 4000);
+        function nextImage() {
+            index = (index + 1) % imageCache.length
+            document.getElementById("image").src = imageCache[index].src;
+            document.getElementById("caption").textContent = captions[index];
+        }
+            /*
+            document.getElementById("image").src = images[index];
+            var caption = images[index][0].toUpperCase() +
+                images[index].replace(".jpg", "").substr(1);
+            document.getElementById("caption").textContent = caption;
+        }
+            */
+
+            
+    </script>
+        <div id='case'>
+            <p>
+                <b>Objective:</b> Create a slideshow to recap memorable moments during a Hiking Club event.
+            </p>
+            <p>
+                <b>Problem:</b> Some images are different dimensions, resulting in a disorienting slideshow.
+            </p>
+            <p>
+                <b>Solution:</b> Use CSS styles to define the height, width, and margins of all images so they remain consistent. 
+
+
+            </p>
+        </div>
+<nav>
+    <a href='../index.html'>
+        <img src='../nav/darkblue-arrow-left.png' alt='previous' />
+    </a>
+    <a href='../index.html'>
+        <img src='../nav/darkblue-grid.png' alt='home' />
+    </a>
+    <a href='../index.html'>
+        <img src='../nav/darkblue-arrow-right.png' alt='next' />
+    </a>
+</nav>
+
+
+</body>
+</html>
+
