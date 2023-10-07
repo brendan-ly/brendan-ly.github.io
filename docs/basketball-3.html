@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    Brendan Ly, October 17th, 2022
+    -->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" />
+    <title>Basketball</title>
+    <style>
+        /* styles go here */
+
+        @import "portfolio.css";
+        body {
+            text-align: center;
+            background-color: rgb(56, 155, 253);
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+        }
+
+        div.controls {
+            margin: 2em 0;
+        }
+
+        div.controls button {
+            width: 48px;
+            height: 48px;
+            border: none;
+            background-color: peachpuff;
+            font-size: 24px;
+            ;
+        }
+
+        span.spacer {
+            width: 48px;
+            display: inline-block
+        }
+        
+        footer {
+            font-size: 11px;
+        }
+    </style>
+
+    <script src='navigation.js'></script>
+
+</head>
+
+<body>
+    <h1>Bouncing Basketball</h1>
+    <svg width='800' height='600' viewBox='0 0 800 600' xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <!-- the clipping paths and masks will go here -->
+
+        <defs>
+            <clipPath id='c'>
+                <circle cx='100' cy='100' r='50' />
+
+            </clipPath>
+
+            <radialGradient cx='30%' cy='30%' r='70%' id='grad1'>
+                <stop offset='0' stop-color='white' stop-opacity='50%' />
+                <stop offset='1' stop-color='white' stop-opacity='0' />
+            </radialGradient>
+
+            <radialGradient cx='30%' cy='30%' r='70%' id='grad2'>
+                <stop offset='0' stop-color='black' stop-opacity='0' />
+                <stop offset='1' stop-color='black' stop-opacity='0.5' />
+            </radialGradient>
+
+            <radialGradient cx='30%' cy='30%' r='70%' id='grad3'>
+                <stop offset='0' stop-color='black' stop-opacity='0' />
+                <stop offset='1' stop-color='black' stop-opacity='0.5' />
+            </radialGradient>
+
+        </defs>
+
+        <!-- the shapes and stuff will go here -->
+
+        <rect x='0' y='0' width='800' height='600' fill='lightskyblue' />
+        <g id='ball'>
+            <circle cx='100' cy='100' r='50' fill='orange' />
+            <circle cx='100' cy='100' r='50' fill='url(#grad1)' />
+
+            <g clip-path='url(#c)' transform='rotate(-22.5 100 100)'>
+
+                <polyline points='100 50 100 150' stroke='black' stroke-width='2.5' />
+                <polyline points='0 100 200 100' stroke='black' stroke-width='2.5' />
+                <circle cx='30' cy='100' r='50' fill='none' stroke='black' stroke-width='2.5' />
+                <circle cx='170' cy='100' r='50' fill='none' stroke='black' stroke-width='2.5' />
+
+            </g>
+        </g>
+        <circle cx='100' cy='100' r='50' fill='url(#grad1)' id='shine' />
+    </svg>
+
+    <div class='controls'>
+        <button id='orange'>&nbsp;</button>
+        <button id='lightgreen'>&nbsp;</button>
+        <button id='gold'>&nbsp;</button>
+        <button id='magenta'>&nbsp;</button>
+        <button id='red'>&nbsp;</button>
+        <span class='spacer'>&nbsp;</span>
+        <button id='faster'>+</button>
+        <button id='slower'>&ndash;</button>
+    </div>
+
+    <div class='controls'>
+        <input type='checkbox' id='follow' /> <label for='follow'>Follow the Mouse</label>
+    </div>
+
+    <script>
+        var ball = document.getElementById('ball');
+        var shine = document.getElementById('shine');
+        ball.setAttribute('transform', 'translate(100 200) rotate(37 100 100)');
+
+        var x = 0;
+        var y = 0;
+        var dx = 2;
+        var dy = 3;
+        var rotate = 0;
+        var drotate = 1.5;
+
+        setupButtons();
+        document.getElementsByTagName('svg')[0].onclick = followMouse;
+        document.getElementsByTagName('svg')[0].onmousemove = followMouse;
+
+        function followMouse(e) {
+            console.log(e);
+            if (e.type == 'mousemove') {
+                if (!document.getElementById('follow').checked) {
+                    return;
+                }
+            }
+            var targetX = e.offsetX;
+            var targetY = e.offsetY;
+            var newDx = targetX - (x + 100);
+            var newDy = targetY - (y + 100);
+            var newDistance = Math.sqrt(newDx * newDx + newDy * newDy);
+            var oldDistance = Math.sqrt(dx * dx + dy * dy);
+            var multiplier = oldDistance / newDistance;
+            dx = newDx * multiplier;
+            dy = newDy * multiplier;
+        }
+
+        var timer = setInterval(moveBall, 20);
+
+        function setupButtons() {
+            var buttons = document.getElementsByClassName('controls')[0]
+                .getElementsByTagName('button');
+            for (var i = 0; i < buttons.length; i++) {
+                if (buttons[i].id == 'faster') {
+                    buttons[i].onclick = goFaster;
+                }
+                else if (buttons[i].id == 'slower') {
+                    buttons[i].onclick = goSlower;
+                }
+                else {
+                    buttons[i].style.backgroundColor = buttons[i].id;
+                    buttons[i].onclick = changeColor;
+                }
+            }
+        }
+
+        function goFaster() {
+            dx *= 1.4;
+            dy *= 1.4;
+            drotate *= 1.4
+        }
+
+        function goSlower() {
+            dx /= 1.4;
+            dy /= 1.4;
+            drotate /= 1.4
+        }
+
+        function changeColor(e) {
+            var solid = document.getElementById('ball').getElementsByTagName('circle')[0]
+                ;
+            solid.setAttribute('fill', e.currentTarget.id);
+        }
+
+        function moveBall() {
+            x += dx;
+            y += dy;
+
+            rotate += drotate;
+            ball.setAttribute('transform', 'translate(' + x + " " + y + ") rotate(" + rotate + " 100 100)");
+            shine.setAttribute('transform', 'translate(' + x + " " + y + ")");
+            var multiplier = 0;
+            if ((x >= 650 && dy > 0) || (x <= -50 && dy < 0)) {
+                multiplier = -1;
+            }
+            else if ((y >= 450 && dx < 0) || (y <= -50 && dx > 0)) {
+                multiplier = -1;
+            }
+            else if ((x >= 650 && dy < 0) || (x <= -50 && dy < 0)) {
+                multiplier = 1;
+            }
+            else if ((y >= 450 && dx > 0) || (y <= -50 && dx < 0)) {
+                multiplier = 1;
+            }
+
+            if (multiplier != 0) {
+                drotate = Math.abs(drotate) * multiplier;
+            }
+
+            rotate += drotate
+
+            if (x >= 650 || x <= -50) {
+                dx *= -1;
+            }
+            if (y >= 450 || y <= -50) {
+                dy *= -1;
+            }
+        }
+
+    </script>
+
+    <nav>
+        <a href='index.html'>
+            <img src= 'nav/darkblue-arrow-left.png' alt='previous' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-grid.png' alt='home' />
+        </a>
+        <a href='index.html'>
+            <img src= 'nav/darkblue-arrow-right.png' alt='next' />
+        </a>
+    </nav>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+    Brendan Ly
+    BMI Calculator
+    September 20, 2022
+    -->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" /> 
+    <title>BMI Calculator</title>
+    <style>
+    /* styles go here */
+
+    @import "portfolio.css";
+
+    h1 {
+        text-align: center;
+    }
+    body{
+        font-family: Verdana, sans-serif;
+        text-align: center;
+    }
+    div#content {
+        width: 80%;
+        max-width: 600px;
+        margin: 1em auto;
+        padding: 16px;
+        background-color: lightgreen;
+        box-shadow: 2px 2px 6px gray;
+        border-radius: 16px;
+    }
+    div#content p {
+        margin: 16px 0;
+        text-align: center;
+    }
+    div#content p#results {
+        margin: 16px;
+        text-align: center;
+    }
+    div#content p#explanation {
+        margin: 16px 0;
+        text-align: center;
+    }
+    div#content p label {
+        display: inline-block;
+        width: 70px;
+        text-align: right;
+        margin-right: 12px;
+    }
+    button {
+        font-size: 16px;
+    }
+    footer {
+        font-size: 11px;
+        text-align: center;
+    }
+    </style>
+    
+    <script src='navigation.js'>
+
+    </script>
+</head>
+
+<body>
+    <h1>BMI Calculator</h1>
+    <!-- page content will go here -->
+    <div id = "content">
+        <p>
+            <label>Feet</label>
+            <input type="text" id="feet" />
+        </p>
+        <p>
+            <label>Inches</label>
+            <input type="text" id="inches" />
+        </p>
+        <p>
+            <label>Pounds</label>
+            <input type="text" id="pounds" />
+        </p>
+        <p>
+            <button id="calculate">Calculate</button>
+        </p>
+        <p id="results">
+            The results will go here.
+        </p>
+        <p id="explanation">
+            The explanation will go here.
+        </p>
+        
+    </div>
+    <script>
+    // scripts will go here
+    function get(id) {
+        return document.getElementById(id);
+        
+    }
+    get('calculate').onclick = doBmi;
+
+    function doBmi(e) {
+        var ft      = parseInt (get('feet').value);
+        var inch    = parseFloat(get('inches').value);
+        var lbs     = parseFloat(get('pounds').value);
+        inch += ft * 12; 
+        console.log (ft, inch, lbs);
+
+        // bmi = pounds / in^2 * 703
+        var bmi = lbs / (inch * inch) * 703;
+        console.log (bmi);
+        
+        get('results').textContent = "Your BMI is " + bmi.toFixed(2); + ".";
+
+        var range = [
+            "Underweight",
+            "Normal",
+            "Overweight",
+            "Obese"
+        ];
+
+        if (bmi >=30) {
+            var index = range.indexOf(range);
+            get('explanation').textContent = "Your BMI falls under the " + range[3] + " category.";
+        }
+        else if (bmi >=25) {
+            var index = range.indexOf(range);
+            get('explanation').textContent = "Your BMI falls under the " + range[2] + " category.";
+        }
+        else if (bmi >=18.5) {
+            var index = range.indexOf(range);
+            get('explanation').textContent = "Your BMI falls under the " + range[1] + " category.";
+        }
+        else {
+            var index = range.indexOf(range);
+            get('explanation').textContent = "Your BMI falls under the " + range[0] + " category.";
+        }
+
+        //add footer
+    }
+    
+    </script>
+    <div id='case'>
+        <p>
+            <b>Objective:</b> Create a BMI calculator to allow people to monitor their health.
+        </p>
+        <p>
+            <b>Problem:</b> The user may not know what the BMI value means.
+
+        </p>
+        <p>
+            <b>Solution:</b> Use conditional statements for BMI ranges to display varying textual descriptions such as “healthy” or “overweight”, allowing users to understand their measurement.  
+
+        </p>
+    </div>
+    <nav>
+        <a href='index.html'>
+            <img src='nav/darkblue-arrow-left.png' alt='previous' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-grid.png' alt='home' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-arrow-right.png' alt='next' />
+        </a>
+    </nav>
+
+</body>
+</html>

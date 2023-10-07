@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    Brendan Ly
+    October 3rd, 2022
+    -->
+    <meta charset='utf-8' />
+    <meta name="viewport" content="width=device-width" />
+    <title>Tic Tac Toe Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@700&display=swap');
+        @import "portfolio.css";
+        body {
+            text-align: center;
+            font-family: Fuzzy Bubbles, sans-serif;
+            background-color: #bda5ff;
+        }
+
+        div#board {
+            margin: 1em auto;
+        }
+
+        div#board button {
+            width: 90px;
+            height: 90px;
+            margin: 6px 4px;
+            border: 5px solid;
+            background-color: rgb(134, 211, 255);
+            font-size: 34px;
+
+        }
+
+        button#newgame {
+            padding: 8px 16px;
+            background-color: rgb(230, 55, 99);
+            border: none;
+            border-radius: 3px;
+            font-family: Fuzzy Bubbles;
+            font-size: 18px;
+        }
+
+        @media screen and (max-width: 320px) {
+            div#board button {
+                width: 70px;
+                height: 70px;
+                font-size: 26px;
+            }
+        }
+
+        @media screen and (min-width: 500px) {
+            div#board button {
+                width: 128px;
+                height: 128px;
+                font-size: 54px;
+            }
+        }
+        footer {
+            margin-top: 3em 0;
+        }
+    </style>
+    <script src='navigation.js'>
+        
+    </script>
+</head>
+
+<body>
+    <h1>Tic Tac Toe Game</h1>
+
+    <p id='message'>Player X's turn</p>
+
+    <div id='board'>
+
+        <div class='row'>
+            <button id='b1'>&nbsp;</button>
+            <button id='b2'>&nbsp;</button>
+            <button id='b3'>&nbsp;</button>
+        </div>
+
+        <div class='row'>
+            <button id='b4'>&nbsp;</button>
+            <button id='b5'>&nbsp;</button>
+            <button id='b6'>&nbsp;</button>
+        </div>
+
+        <div class='row'>
+            <button id='b7'>&nbsp;</button>
+            <button id='b8'>&nbsp;</button>
+            <button id='b9'>&nbsp;</button>
+        </div>
+    </div>
+
+    <div id='controls'>
+        <button id='newgame'>New Game</button>
+    </div>
+
+    <script>
+        function get(id) {
+            return document.getElementById(id);
+        }
+
+        var player = "X";
+        var somebodyWon = false; //start with 
+        var draw = false;
+
+        function setup() {
+            var board = get('board');
+            board.onclick = boardButtonTouched;
+            get('newgame').onclick = startNewGame
+        }
+
+        function startNewGame(e) {
+            // clear board, reset won variable, reset message
+            for (var i = 1; i <= 9; i++) {
+                var id = "b" + i;
+                get(id).innerHTML = "&nbsp;";
+            }
+            somebodyWon = false;
+            draw = false;
+            get('message').innerHTML = "Player " + player + " up first!";
+        }
+
+        function boardButtonTouched(e) {
+            console.log(e);
+            if (e.target.tagName != "BUTTON") {
+                return;
+            }
+            if (somebodyWon) {
+                return;
+            }
+            // alert (e.target.id);
+            if (alreadyPlayed(e.target)) {
+                return;
+
+            }
+            e.target.textContent = player;
+            if (playerWon(player)) {
+                somebodyWon = true;
+                get('message').textContent = "Player " + player + " won!";
+                // alert("Player " + player + " won!");
+            }
+            if (nobodyWon()) {
+                draw = true;
+                get('message').textContent = "Draw! Nobody wins.";
+            }
+            switchPlayers();
+        }
+
+        function nobodyWon() {
+            if (playerWon("X")) {
+                return false;
+            }
+
+            if (playerWon("O")) {
+                return false;
+            }
+            for (var i = 1; i <= 9; i++) {
+                var id = "b" + i;
+                if (get(id).textContent != "X" &&
+                    get(id).textContent != "O") {
+                    return false;
+                }
+            }
+            return true;
+        }
+        function playerWon(p) {
+            //checks all 8 winning combinations
+            var possibleWins = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [1, 4, 7],
+                [2, 5, 8],
+                [3, 6, 9],
+                [1, 5, 9],
+                [3, 5, 7]
+            ];
+            // loop for all possible wins
+            for (var i = 0; i < possibleWins.length; i++) {
+                // check one possible win
+                var buttonIds = [
+                    "b" + possibleWins[i][0],
+                    "b" + possibleWins[i][1],
+                    "b" + possibleWins[i][2],
+                ];
+                console.log(buttonIds);
+                if (get(buttonIds[0]).textContent == p &&
+                    get(buttonIds[1]).textContent == p &&
+                    get(buttonIds[2]).textContent == p) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function alreadyPlayed(b) {
+            return b.textContent == "X" || b.textContent == "O";
+        }
+
+        function switchPlayers() {
+            if (player == "X") {
+                player = "O";
+            }
+            else {
+                player = "X";
+            }
+            if (!somebodyWon && !draw) {
+                get('message').textContent = "Player " + player + "'s turn!";
+            }
+        }
+
+        setup();
+
+    </script>
+    <div id='case'>
+        <p>
+            <b>Objective:</b>Create a Tic Tac Toe game where two players take turns.
+
+
+        </p>
+        <p>
+            <b>Problem:</b>The players may forget whose turn it is. 
+
+        </p>
+        <p>
+            <b>Solution:</b>Display important information such as the player turn (Player X or Player O) at the top of the screen. 
+
+
+        </p>
+    </div>
+    <nav>
+        <a href='index.html'>
+            <img src='nav/darkblue-arrow-left.png' alt='previous' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-grid.png' alt='home' />
+        </a>
+        <a href='index.html'>
+            <img src='nav/darkblue-arrow-right.png' alt='next' />
+        </a>
+    </nav>
+
+</body>
+
+</html>
