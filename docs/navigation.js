@@ -1,6 +1,5 @@
 var pages = [
     'snakegame.html',
-    'periodic.html',
     'chinesezodiac/chinesezodiac.html',
     'segments.html',
     'basketball-3.html',
